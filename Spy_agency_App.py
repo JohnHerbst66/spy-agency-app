@@ -1,20 +1,30 @@
 import re
+import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from database import get_db_connection, create_users_table
 
 # 1. COMMENT: Initialize the core Flask application and configure the session secret signature key.
 app = Flask(__name__)
-app.secret_key = 'spy_agency_ultra_secret_key'
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'spy_agency_ultra_secret_key')
 
-def validate_agent_form(codename, username, pass_key, password):
-    if not codename or not username or not pass_key or not password:
+# FORCE RE-INITIALIZATION ON PRODUCTION: Makes sure the table is built on Render automatically
+@app.before_request
+def initialize_database_on_render():
+    create_users_table()
+
+def is_valid_email(email):
+    email_pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+    return re.match(email_pattern, email)
+
+def validate_agent_form(codename, username, spy_email, password):
+    if not codename or not username or not spy_email or not password:
         return "❌ Access Denied: All classified fields are required."
     if len(codename) < 3 or len(codename) > 100:
         return "❌ Access Denied: Code name must be between 3 and 100 characters."
     if len(username) < 3 or len(username) > 100:
         return "❌ Access Denied: Username must be between 3 and 100 characters."
-    if len(pass_key) < 6 or len(pass_key) > 100:
-        return "❌ Access Denied: Pass key must be between 6 and 100 characters."
+    if not is_valid_email(spy_email):
+        return "❌ Access Denied: Invalid Spy Email address structure format."
     if len(password) < 8 or len(password) > 100:
         return "❌ Access Denied: Password must be between 8 and 100 characters."
     return None
@@ -76,19 +86,19 @@ def register():
     if request.method == 'POST':
         codename = request.form.get('codename').strip()
         username = request.form.get('username').strip()
-        pass_key = request.form.get('pass_key').strip()
+        spy_email = request.form.get('spy_email').strip()
         password = request.form.get('password').strip()
         
-        error = validate_agent_form(codename, username, pass_key, password)
+        error = validate_agent_form(codename, username, spy_email, password)
         if error:
             flash(error, 'error')
-            return render_template('register.html', codename=codename, username=username, pass_key=pass_key, password=password)
+            return render_template('register.html', codename=codename, username=username, spy_email=spy_email, password=password)
         
         connection = get_db_connection()
         try:
             connection.execute(
-                "INSERT INTO agents (codename, username, pass_key, password) VALUES (?, ?, ?, ?)",
-                (codename, username, pass_key, password)
+                "INSERT INTO agents (codename, username, spy_email, password) VALUES (?, ?, ?, ?)",
+                (codename, username, spy_email, password)
             )
             connection.commit()
             flash("⚡ Operative created successfully. Proceed to authentication terminal.", 'success')
@@ -161,20 +171,20 @@ def update_profile(agent_id):
     if request.method == 'POST':
         codename = request.form.get('codename').strip()
         username = request.form.get('username').strip()
-        pass_key = request.form.get('pass_key').strip()
+        spy_email = request.form.get('spy_email').strip()
         password = request.form.get('password').strip()
         
-        error = validate_agent_form(codename, username, pass_key, password)
+        error = validate_agent_form(codename, username, spy_email, password)
         if error:
             flash(error, 'error')
             connection.close()
-            return render_template('update.html', agent=agent, codename=codename, username=username, pass_key=pass_key, password=password)
+            return render_template('update.html', agent=agent, codename=codename, username=username, spy_email=spy_email, password=password)
             
         try:
             # 7. COMMENT: Form alteration submission handler - override existing matching table data parameters securely.
             connection.execute(
-                "UPDATE agents SET codename = ?, username = ?, pass_key = ?, password = ? WHERE id = ?",
-                (codename, username, pass_key, password, agent_id)
+                "UPDATE agents SET codename = ?, username = ?, spy_email = ?, password = ? WHERE id = ?",
+                (codename, username, spy_email, password, agent_id)
             )
             connection.commit()
             flash("⚡ Classified credentials successfully overridden in core frame.", 'success')
