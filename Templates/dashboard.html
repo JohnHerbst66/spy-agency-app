@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HQ - Central Terminal</title>
+    <style>
+        body { background-color: #0d0f12; color: #00ff66; font-family: 'Courier New', Courier, monospace; margin: 0; padding: 0; }
+        .navbar { background-color: #14181d; padding: 15px 40px; border-bottom: 2px solid #00ff66; display: flex; gap: 30px; }
+        .navbar a { color: #00ff66; text-decoration: none; font-weight: bold; font-size: 16px; text-transform: uppercase; }
+        .navbar a:hover { text-shadow: 0 0 8px #00ff66; color: #fff; }
+        .logout-link { margin-left: auto; color: #ff3333 !important; }
+        .welcome-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; text-align: center; padding: 20px; }
+        h1 { font-size: 45px; text-transform: uppercase; letter-spacing: 4px; margin: 0; animation: blink 2s infinite alternate; }
+        p { font-size: 20px; color: #888; margin-top: 15px; }
+        @keyframes blink { 0% { opacity: 0.8; text-shadow: 0 0 5px #00ff66; } 100% { opacity: 1; text-shadow: 0 0 25px #00ff66, 0 0 40px #00ff66; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/dashboard">Home</a>
+        <a href="/users">Roster</a>
+        <a href="/my_profile">My Profile</a>
+        <a href="/logout" class="logout-link">Disconnect [X]</a>
+    </nav>
+
+    <div class="welcome-container">
+        <h1>Welcome to the Secret Agency, <span style="color: #fff;">{{ session['username'] }}</span></h1>
+        <p>Your current active identifier status: Active Operative [{{ session['codename'] }}]</p>
+    </div>
+
+</body>
+</html>

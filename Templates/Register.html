@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HQ - Agent Recruitment</title>
+
+    <style>
+        body{
+            background-color: #0d0f12;
+            color:#00ff66;
+            font-family: 'Courier new', Courier, monospace;
+            padding: 40px;
+        }
+        .terminal-box{
+            border: 2px solid #00ff66;
+            box-shadow: 0 0 15px #00ff66;
+            padding: 30px;
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #14181d;
+        }
+        h2{text-align: center;text-transform: uppercase;letter-spacing: 2px;}
+        .input-group{margin-bottom: 20px;}
+        label{display: block;margin-bottom: 5px;}
+        input{
+            width: 100%;
+            padding: 10px;
+            background-color: #0d0f12;
+            border: 1px solid #00ff66;
+            color: #00ff66;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        input:focus{
+            width: 100%;
+            padding: 12px;
+            background-color: #00ff66;
+            color: #0d0f12;
+            border:none;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+        button:hover{background-color: #00cc52;box-shadow: 0 0 10px #00ff66;}
+        .flash-msg{
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid red;
+            color: #ff3333;
+            text-align: center;
+            background-color: #1a0d0d;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-box">
+        <h2>agency Registration</h2>
+        <!--flash message show errors here-->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                
+                    {% for message in messages %}
+                        <div class="flash-msg">{{ message }}</div>
+                    {% endfor %}
+               
+            {% endif %}
+        {% endwith %}
+        <form method="Post">
+            <div class="input-group">
+                <label>CODE NAME(e.g.,Agent 007)</label>
+                <input type="text" name="codename" value="{{ codename or '' }}" autocomplete = "off">
+            </div>
+            <div class="input-group">
+                <label>USERNAME</label>
+                <INPUT type="text"name="username" value="{{ username or '' }}" autocomplete = "off">
+            </div>
+            <div class="input-group">
+                <label>PASS KEY</label>
+                 <!-- CRUCIAL: Make sure name is exactly "pass_key" -->
+                 <input type="text" name="pass_key" value="{{ pass_key or '' }}" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label>SECRET PASSWORD</label>
+                <INPUT type="text" name="password" value="{{password or''}}" autocomplete = "off">
+            </div>
+            <button type="submit">Upload Credentials</button>
+        </form>
+    </div>
+</body>
+</html>

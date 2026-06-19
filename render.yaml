@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: spy-agency-terminal
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn Spy_agency_App:app

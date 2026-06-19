@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HQ - Active Operatives</title>
+    <style>
+        body {
+            background-color: #0d0f12;
+            color: #00ff66;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 40px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h2 { text-transform: uppercase; border-bottom: 2px solid #00ff66; padding-bottom: 10px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #14181d;
+        }
+        th, td {
+            border: 1px solid #00ff66;
+            padding: 12px;
+            text-align: left;
+        }
+        th { background-color: #00ff66; color: #0d0f12; }
+        tr:hover { background-color: #1c232b; }
+        .view-btn {
+            color: #00ff66;
+            text-decoration: none;
+            border: 1px solid #00ff66;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .view-btn:hover { background-color: #00ff66; color: #0d0f12; }
+        .nav-link { color: #00ff66; display: inline-block; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <!-- Add this component right at the start of your <body> tag -->
+<nav class="navbar" style="background-color: #14181d; padding: 15px 40px; border-bottom: 2px solid #00ff66; display: flex; gap: 30px; margin-bottom: 30px;">
+    <a href="/dashboard" style="color: #00ff66; text-decoration: none; font-weight: bold; text-transform: uppercase;">Home</a>
+    <a href="/users" style="color: #00ff66; text-decoration: none; font-weight: bold; text-transform: uppercase;">Roster</a>
+    <a href="/my_profile" style="color: #00ff66; text-decoration: none; font-weight: bold; text-transform: uppercase;">My Profile</a>
+    <a href="/logout" style="margin-left: auto; color: #ff3333; text-decoration: none; font-weight: bold; text-transform: uppercase;">Disconnect [X]</a>
+</nav>
+
+
+    <div class="container">
+        <a class="nav-link" href="/register"></a><< Register New Agent</a>
+        <h2>[ Classified Agent Roster ]</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Code Name</th>
+                    <th>Username</th>
+                    <th>Clear Password (Testing)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for agent in agents %}
+                <tr>
+                    <td>{{ agent.id }}</td>
+                    <td>{{ agent.codename }}</td>
+                    <td>{{ agent.username }}</td>
+                    <td style="color: #ffcc00;">{{ agent.password }}</td>
+                    <td>
+                        <a class="view-btn" href="{{ url_for('profile', agent_id=agent.id) }}">Access Profile</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

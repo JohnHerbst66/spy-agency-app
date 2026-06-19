@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Agent Profile Dossier</title>
+    <style>
+        body {
+            background-color: #0d0f12;
+            color: #00ff66;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 40px;
+        }
+        .dossier-box {
+            border: 2px dashed #00ff66;
+            background-color: #14181d;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        h2 { text-align: center; color: #ff3333; margin-top: 0; text-transform: uppercase; }
+        .badge-grid { display: flex; align-items: center; margin-top: 20px; }
+        .avatar-placeholder {
+            width: 120px;
+            height: 120px;
+            border: 2px solid #00ff66;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            text-align: center;
+            margin-right: 30px;
+            background-color: #0d0f12;
+        }
+        .data-field { margin-bottom: 15px; font-size: 16px; }
+        .label { color: #888; font-weight: bold; }
+        .nav-link { color: #00ff66; display: inline-block; margin-bottom: 20px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dossier-box">
+        <a class="nav-link" href="/users"><< Return to Roster</a>
+        <h2>⚠️ CLASSIFIED DOSSIER ⚠️</h2>
+        
+        <div class="badge-grid">
+            <div class="avatar-placeholder">
+                [ AVATAR <br> PENDING ]
+            </div>
+            
+            <div>
+                <div class="data-field"><span class="label">AGENT ID:</span> #{{ agent.id }}</div>
+                <div class="data-field"><span class="label">CODE NAME:</span> {{ agent.codename }}</div>
+                <div class="data-field"><span class="label">USERNAME:</span> {{ agent.username }}</div>
+                <div class="data-field"><span class="label">PASS KEY:</span> {{ agent.pass_key }}</div>
+                <div class="data-field"><span class="label">PASSWORD:</span> <span style="color: #ffcc00;">{{ agent.password }}</span></div>
+                <div style="margin-top: 25px; text-align: center;">
+                     <a href="{{ url_for('update_profile', agent_id=agent.id) }}" style="color: #0d0f12; background-color: #00ff66; padding: 10px 20px; text-decoration: none; font-weight: bold; text-transform: uppercase; border-radius: 3px; display: inline-block;">
+
+                         ✏️ Edit Agent Credentials
+                     </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

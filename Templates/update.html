@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HQ - Modify Credentials</title>
+    <style>
+        body { background-color: #0d0f12; color: #00ff66; font-family: 'Courier New', Courier, monospace; margin: 0; padding: 0; }
+        .navbar { background-color: #14181d; padding: 15px 40px; border-bottom: 2px solid #00ff66; display: flex; gap: 30px; margin-bottom: 40px; }
+        .navbar a { color: #00ff66; text-decoration: none; font-weight: bold; font-size: 16px; text-transform: uppercase; }
+        .navbar a:hover { text-shadow: 0 0 8px #00ff66; color: #fff; }
+        .logout-link { margin-left: auto; color: #ff3333 !important; }
+        .terminal-box { border: 2px solid #ffcc00; box-shadow: 0 0 15px #ffcc00; padding: 30px; max-width: 500px; margin: 0 auto; background-color: #14181d; }
+        h2 { text-align: center; text-transform: uppercase; color: #ffcc00; letter-spacing: 2px; margin-top: 0; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #ffcc00; }
+        input { width: 100%; padding: 10px; background-color: #0d0f12; border: 1px solid #ffcc00; color: #fff; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
+        input:focus { outline: none; box-shadow: 0 0 8px #ffcc00; }
+        button { width: 100%; padding: 12px; background-color: #ffcc00; color: #0d0f12; border: none; font-weight: bold; cursor: pointer; font-size: 16px; text-transform: uppercase; font-family: 'Courier New', Courier, monospace; }
+        button:hover { background-color: #e6b800; box-shadow: 0 0 10px #ffcc00; }
+        .flash-msg { padding: 10px; margin-bottom: 20px; border: 1px solid red; color: #ff3333; text-align: center; background-color: #1a0d0d; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/dashboard">Home</a>
+        <a href="/users">Roster</a>
+        <a href="/my_profile">My Profile</a>
+        <a href="/logout" class="logout-link">Disconnect [X]</a>
+    </nav>
+
+    <div class="terminal-box">
+        <h2>[ Edit Credentials: ID #{{ agent.id }} ]</h2>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-msg">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="input-group">
+                <label>CODE NAME</label>
+                <!-- Preloading old data using agent.codename -->
+                <input type="text" name="codename" value="{{ codename or agent.codename }}" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label>USERNAME</label>
+                <input type="text" name="username" value="{{ username or agent.username }}" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label>PASS KEY</label>
+                <input type="text" name="pass_key" value="{{ pass_key or agent.pass_key }}" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label>SECRET PASSWORD</label>
+                <input type="text" name="password" value="{{ password or agent.password }}" autocomplete="off">
+            </div>
+            <button type="submit">Commit Alterations</button>
+        </form>
+    </div>
+
+</body>
+</html>
