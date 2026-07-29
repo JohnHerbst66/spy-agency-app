@@ -1,6 +1,7 @@
 import re
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
+from werkzeug.security import generate_password_hash, check_password_hash
 from database import get_db_connection, create_users_table
 
 # 1. COMMENT: Initialize the core Flask application and configure the session secret signature key.
@@ -44,13 +45,15 @@ def login():
         password = request.form.get('password').strip()
         
         connection = get_db_connection()
+        # Look up the agent by username ONLY, then verify the password hash in Python.
+        # We never send the raw password to the database for comparison.
         agent = connection.execute(
-            "SELECT * FROM agents WHERE username = ? AND password = ?", 
-            (username, password)
+            "SELECT * FROM agents WHERE username = ?",
+            (username,)
         ).fetchone()
         connection.close()
-        
-        if agent:
+
+        if agent and check_password_hash(agent['password'], password):
             # 3. COMMENT: Issue a secure digital cookie badge to track individual agent identity across protected routes.
             session['agent_id'] = agent['id']
             session['codename'] = agent['codename']
@@ -94,11 +97,14 @@ def register():
             flash(error, 'error')
             return render_template('register.html', codename=codename, username=username, spy_email=spy_email, password=password)
         
+        # Store a salted hash of the password, never the raw text.
+        hashed_password = generate_password_hash(password)
+
         connection = get_db_connection()
         try:
             connection.execute(
                 "INSERT INTO agents (codename, username, spy_email, password) VALUES (?, ?, ?, ?)",
-                (codename, username, spy_email, password)
+                (codename, username, spy_email, hashed_password)
             )
             connection.commit()
             flash("⚡ Operative created successfully. Proceed to authentication terminal.", 'success')
@@ -180,11 +186,14 @@ def update_profile(agent_id):
             connection.close()
             return render_template('update.html', agent=agent, codename=codename, username=username, spy_email=spy_email, password=password)
             
+        # Re-hash the (possibly changed) password before writing it back.
+        hashed_password = generate_password_hash(password)
+
         try:
             # 7. COMMENT: Form alteration submission handler - override existing matching table data parameters securely.
             connection.execute(
                 "UPDATE agents SET codename = ?, username = ?, spy_email = ?, password = ? WHERE id = ?",
-                (codename, username, spy_email, password, agent_id)
+                (codename, username, spy_email, hashed_password, agent_id)
             )
             connection.commit()
             flash("⚡ Classified credentials successfully overridden in core frame.", 'success')

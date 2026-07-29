@@ -2,12 +2,14 @@ import sqlite3
 import os
 
 def get_db_connection():
-    # Vind uit presies in watter gids hierdie database.py lêer sit
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # Skep 'n absolute stelselpad wat werk op jou PC én op die Render wolk-bediener
-    db_path = os.path.join(base_dir, 'spy_vault.db')
-    
+    # If DATABASE_PATH is set (e.g. a Render persistent disk mount like
+    # /var/data/spy_vault.db), store the database there so it survives restarts.
+    # Otherwise fall back to a file next to this script — good for local dev.
+    db_path = os.environ.get('DATABASE_PATH')
+    if not db_path:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        db_path = os.path.join(base_dir, 'spy_vault.db')
+
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
@@ -27,4 +29,3 @@ def create_users_table():
     ''')
     conn.commit()
     conn.close()
-    print("🔒 Spy Vault Database Initialized Successfully!")
