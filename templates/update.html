@@ -56,7 +56,8 @@
             </div>
             <div class="input-group">
                 <label>SECRET PASSWORD</label>
-                <input type="text" name="password" value="{{ password or agent.password }}" autocomplete="off">
+                <!-- Leave blank to keep the current password. Only a value typed here replaces it. -->
+                <input type="password" name="password" value="" placeholder="Leave blank to keep current password" autocomplete="off">
             </div>
             <button type="submit">Commit Alterations</button>
         </form>

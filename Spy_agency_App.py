@@ -17,8 +17,8 @@ def is_valid_email(email):
     email_pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
     return re.match(email_pattern, email)
 
-def validate_agent_form(codename, username, spy_email, password):
-    if not codename or not username or not spy_email or not password:
+def validate_agent_form(codename, username, spy_email, password, password_required=True):
+    if not codename or not username or not spy_email:
         return "❌ Access Denied: All classified fields are required."
     if len(codename) < 3 or len(codename) > 100:
         return "❌ Access Denied: Code name must be between 3 and 100 characters."
@@ -26,7 +26,12 @@ def validate_agent_form(codename, username, spy_email, password):
         return "❌ Access Denied: Username must be between 3 and 100 characters."
     if not is_valid_email(spy_email):
         return "❌ Access Denied: Invalid Spy Email address structure format."
-    if len(password) < 8 or len(password) > 100:
+    # On registration a password is mandatory. On update it is optional:
+    # a blank password means "keep the current one", so only validate a
+    # password that was actually entered.
+    if password_required and not password:
+        return "❌ Access Denied: All classified fields are required."
+    if password and (len(password) < 8 or len(password) > 100):
         return "❌ Access Denied: Password must be between 8 and 100 characters."
     return None
 
@@ -184,21 +189,27 @@ def update_profile(agent_id):
         spy_email = request.form.get('spy_email', '').strip()
         password = request.form.get('password', '').strip()
 
-        error = validate_agent_form(codename, username, spy_email, password)
+        # Password is optional here: a blank field means "keep the current password".
+        error = validate_agent_form(codename, username, spy_email, password, password_required=False)
         if error:
             flash(error, 'error')
             connection.close()
-            return render_template('update.html', agent=agent, codename=codename, username=username, spy_email=spy_email, password=password)
-            
-        # Re-hash the (possibly changed) password before writing it back.
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+            return render_template('update.html', agent=agent, codename=codename, username=username, spy_email=spy_email)
 
         try:
             # 7. COMMENT: Form alteration submission handler - override existing matching table data parameters securely.
-            connection.execute(
-                "UPDATE agents SET codename = ?, username = ?, spy_email = ?, password = ? WHERE id = ?",
-                (codename, username, spy_email, hashed_password, agent_id)
-            )
+            if password:
+                # A new password was entered: hash it and store the new hash.
+                connection.execute(
+                    "UPDATE agents SET codename = ?, username = ?, spy_email = ?, password = ? WHERE id = ?",
+                    (codename, username, spy_email, generate_password_hash(password, method='pbkdf2:sha256'), agent_id)
+                )
+            else:
+                # Left blank: update everything except the password, leaving the existing hash intact.
+                connection.execute(
+                    "UPDATE agents SET codename = ?, username = ?, spy_email = ? WHERE id = ?",
+                    (codename, username, spy_email, agent_id)
+                )
             connection.commit()
             flash("⚡ Classified credentials successfully overridden in core frame.", 'success')
             return redirect(url_for('profile', agent_id=agent_id))
