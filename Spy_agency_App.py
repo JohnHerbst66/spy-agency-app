@@ -98,7 +98,9 @@ def register():
             return render_template('register.html', codename=codename, username=username, spy_email=spy_email, password=password)
         
         # Store a salted hash of the password, never the raw text.
-        hashed_password = generate_password_hash(password)
+        # Use pbkdf2:sha256 explicitly: scrypt (Werkzeug's default) needs more
+        # memory than some servers (e.g. Render) allow and raises ValueError there.
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
         connection = get_db_connection()
         try:
@@ -187,7 +189,7 @@ def update_profile(agent_id):
             return render_template('update.html', agent=agent, codename=codename, username=username, spy_email=spy_email, password=password)
             
         # Re-hash the (possibly changed) password before writing it back.
-        hashed_password = generate_password_hash(password)
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
         try:
             # 7. COMMENT: Form alteration submission handler - override existing matching table data parameters securely.
