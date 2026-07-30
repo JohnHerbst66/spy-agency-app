@@ -46,7 +46,8 @@ def login():
         return redirect(url_for('dashboard'))
 
     if request.method == 'POST':
-        username = request.form.get('username', '').strip()
+        # Usernames are stored uppercase, so match case-insensitively by uppercasing input.
+        username = request.form.get('username', '').strip().upper()
         password = request.form.get('password', '').strip()
 
         connection = get_db_connection()
@@ -94,8 +95,9 @@ def register():
     if request.method == 'POST':
         # Use a default of '' so a missing field fails validation gracefully
         # instead of raising AttributeError on None.strip().
-        codename = request.form.get('codename', '').strip()
-        username = request.form.get('username', '').strip()
+        # Code name and username are stored in UPPERCASE; email/password kept as typed.
+        codename = request.form.get('codename', '').strip().upper()
+        username = request.form.get('username', '').strip().upper()
         spy_email = request.form.get('spy_email', '').strip()
         password = request.form.get('password', '').strip()
 
@@ -184,8 +186,8 @@ def update_profile(agent_id):
         return redirect(url_for('users'))
 
     if request.method == 'POST':
-        codename = request.form.get('codename', '').strip()
-        username = request.form.get('username', '').strip()
+        codename = request.form.get('codename', '').strip().upper()
+        username = request.form.get('username', '').strip().upper()
         spy_email = request.form.get('spy_email', '').strip()
         password = request.form.get('password', '').strip()
 

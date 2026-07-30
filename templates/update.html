@@ -15,6 +15,7 @@
         label { display: block; margin-bottom: 5px; font-weight: bold; color: #ffcc00; }
         input { width: 100%; padding: 10px; background-color: #0d0f12; border: 1px solid #ffcc00; color: #fff; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
         input:focus { outline: none; box-shadow: 0 0 8px #ffcc00; }
+        input[name="codename"], input[name="username"] { text-transform: uppercase; }
         button { width: 100%; padding: 12px; background-color: #ffcc00; color: #0d0f12; border: none; font-weight: bold; cursor: pointer; font-size: 16px; text-transform: uppercase; font-family: 'Courier New', Courier, monospace; }
         button:hover { background-color: #e6b800; box-shadow: 0 0 10px #ffcc00; }
         .flash-msg { padding: 10px; margin-bottom: 20px; border: 1px solid red; color: #ff3333; text-align: center; background-color: #1a0d0d; }
@@ -57,7 +58,7 @@
             <div class="input-group">
                 <label>SECRET PASSWORD</label>
                 <!-- Leave blank to keep the current password. Only a value typed here replaces it. -->
-                <input type="password" name="password" value="" placeholder="Leave blank to keep current password" autocomplete="off">
+                <input type="text" name="password" value="" placeholder="Leave blank to keep current password" autocomplete="off">
             </div>
             <button type="submit">Commit Alterations</button>
         </form>

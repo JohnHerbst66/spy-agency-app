@@ -41,6 +41,10 @@
             cursor: pointer;
             font-family: 'Courier New', Courier, monospace;
             font-size: 16px;
+        }
+        /* Only code name and username are forced to uppercase (consistently,
+           whether focused or not). Email and password are left exactly as typed. */
+        input[name="codename"], input[name="username"]{
             text-transform: uppercase;
         }
         button:hover{background-color: #00cc52;box-shadow: 0 0 10px #00ff66;}
