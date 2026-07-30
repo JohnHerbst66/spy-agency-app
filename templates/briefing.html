@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HQ - Briefing Room</title>
+    <style>
+        body { background-color: #0d0f12; color: #00ff66; font-family: 'Courier New', Courier, monospace; margin: 0; padding: 0; }
+        .navbar { background-color: #14181d; padding: 15px 40px; border-bottom: 2px solid #00ff66; display: flex; gap: 30px; }
+        .navbar a { color: #00ff66; text-decoration: none; font-weight: bold; font-size: 16px; text-transform: uppercase; }
+        .navbar a:hover { text-shadow: 0 0 8px #00ff66; color: #fff; }
+        .logout-link { margin-left: auto; color: #ff3333 !important; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px; }
+        h2 { text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #00ff66; padding-bottom: 10px; }
+        .intro { color: #888; margin-bottom: 30px; }
+
+        /* Classified "folders" built from native <details> so no JS is needed */
+        .folder { border: 1px solid #00ff66; background-color: #14181d; margin-bottom: 20px; }
+        .folder > summary {
+            cursor: pointer; list-style: none; padding: 15px 20px;
+            background-color: #101418; font-weight: bold; text-transform: uppercase;
+            letter-spacing: 1px; font-size: 17px; border-left: 6px solid #00ff66;
+        }
+        .folder > summary::-webkit-details-marker { display: none; }
+        .folder > summary::before { content: "\25B6  "; color: #00ff66; }
+        .folder[open] > summary::before { content: "\25BC  "; }
+        .folder > summary:hover { text-shadow: 0 0 8px #00ff66; }
+        .folder-body { padding: 20px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #2a2f36; padding: 10px; text-align: left; font-size: 14px; }
+        th { background-color: #00ff66; color: #0d0f12; text-transform: uppercase; }
+        tr:hover td { background-color: #1c232b; }
+
+        .tag { padding: 2px 8px; font-weight: bold; font-size: 12px; border: 1px solid; }
+        .extreme, .critical, .compromised { color: #ff3333; border-color: #ff3333; }
+        .high, .at.large { color: #ff9900; border-color: #ff9900; }
+        .medium, .pending, .planning { color: #ffcc00; border-color: #ffcc00; }
+        .secure, .active, .detained { color: #00ff66; border-color: #00ff66; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/dashboard">Home</a>
+        <a href="/users">Roster</a>
+        <a href="/briefing">Briefing</a>
+        <a href="/my_profile">My Profile</a>
+        <a href="/logout" class="logout-link">Disconnect [X]</a>
+    </nav>
+
+    <div class="container">
+        <h2>[ Classified Briefing Room ]</h2>
+        <p class="intro">Clearance confirmed, Agent {{ session['codename'] }}. Select a folder to review active intelligence.</p>
+
+        <details class="folder" open>
+            <summary>&#128193; Most Wanted &mdash; Criminal Dossiers</summary>
+            <div class="folder-body">
+                <table>
+                    <thead>
+                        <tr><th>Alias</th><th>Real Name</th><th>Threat</th><th>Known Crime</th><th>Status</th><th>Last Seen</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for c in criminals %}
+                        <tr>
+                            <td><strong>{{ c.alias }}</strong></td>
+                            <td>{{ c.real_name }}</td>
+                            <td><span class="tag {{ c.threat|lower }}">{{ c.threat }}</span></td>
+                            <td>{{ c.crime }}</td>
+                            <td><span class="tag {{ c.status|lower }}">{{ c.status }}</span></td>
+                            <td>{{ c.last_seen }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </details>
+
+        <details class="folder">
+            <summary>&#128188; Mission Briefings &mdash; Active Operations</summary>
+            <div class="folder-body">
+                <table>
+                    <thead>
+                        <tr><th>Operation</th><th>Objective</th><th>Target</th><th>Priority</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for m in missions %}
+                        <tr>
+                            <td><strong>{{ m.code }}</strong></td>
+                            <td>{{ m.objective }}</td>
+                            <td>{{ m.target }}</td>
+                            <td><span class="tag {{ m.priority|lower }}">{{ m.priority }}</span></td>
+                            <td><span class="tag {{ m.status|lower }}">{{ m.status }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </details>
+
+        <details class="folder">
+            <summary>&#127968; Safe Houses &mdash; Field Network</summary>
+            <div class="folder-body">
+                <table>
+                    <thead>
+                        <tr><th>Codename</th><th>Location</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for s in safe_houses %}
+                        <tr>
+                            <td><strong>{{ s.codename }}</strong></td>
+                            <td>{{ s.location }}</td>
+                            <td><span class="tag {{ s.status|lower }}">{{ s.status }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </details>
+    </div>
+
+</body>
+</html>

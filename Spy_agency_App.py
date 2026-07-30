@@ -90,6 +90,33 @@ def dashboard():
         
     return render_template('dashboard.html')
 
+@app.route('/briefing')
+def briefing():
+    if 'agent_id' not in session:
+        flash("🚫 Unauthorized Access: Please log in to view classified data.", 'error')
+        return redirect(url_for('login'))
+
+    # Demo intel. In a real system this would come from the database; here it is
+    # hard-coded made-up data so the briefing room has something to display.
+    criminals = [
+        {'alias': 'The Cobra', 'real_name': 'Viktor Draco', 'threat': 'EXTREME', 'crime': 'International arms dealing', 'status': 'AT LARGE', 'last_seen': 'Istanbul'},
+        {'alias': 'Ghost', 'real_name': 'Unknown', 'threat': 'HIGH', 'crime': 'Cyber espionage', 'status': 'AT LARGE', 'last_seen': 'Berlin'},
+        {'alias': 'Madame Venom', 'real_name': 'Elena Frost', 'threat': 'HIGH', 'crime': 'Bioweapon trafficking', 'status': 'DETAINED', 'last_seen': 'Moscow'},
+        {'alias': 'The Broker', 'real_name': 'Hassan Reed', 'threat': 'MEDIUM', 'crime': 'Money laundering', 'status': 'AT LARGE', 'last_seen': 'Dubai'},
+    ]
+    missions = [
+        {'code': 'OPERATION NIGHTFALL', 'objective': 'Capture The Cobra during the Istanbul arms auction', 'target': 'The Cobra', 'priority': 'CRITICAL', 'status': 'ACTIVE'},
+        {'code': 'OPERATION SILENT WEB', 'objective': 'Trace and apprehend Ghost via the intercepted data relay', 'target': 'Ghost', 'priority': 'HIGH', 'status': 'ACTIVE'},
+        {'code': 'OPERATION COLD SNAP', 'objective': 'Extract intel from Madame Venom while in custody', 'target': 'Madame Venom', 'priority': 'MEDIUM', 'status': 'PENDING'},
+        {'code': 'OPERATION SANDSTORM', 'objective': "Freeze The Broker's offshore accounts and detain him in Dubai", 'target': 'The Broker', 'priority': 'HIGH', 'status': 'PLANNING'},
+    ]
+    safe_houses = [
+        {'codename': 'Nest Alpha', 'location': 'Paris - 14th Arrondissement', 'status': 'SECURE'},
+        {'codename': 'Nest Bravo', 'location': 'Tokyo - Shibuya District', 'status': 'SECURE'},
+        {'codename': 'Nest Charlie', 'location': 'Cairo - Old Town', 'status': 'COMPROMISED'},
+    ]
+    return render_template('briefing.html', criminals=criminals, missions=missions, safe_houses=safe_houses)
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
