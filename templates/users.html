@@ -56,7 +56,7 @@
                     <th>ID</th>
                     <th>Code Name</th>
                     <th>Username</th>
-                    <th>Clear Password (Testing)</th>
+                    <th>Password</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -66,7 +66,7 @@
                     <td>{{ agent.id }}</td>
                     <td>{{ agent.codename }}</td>
                     <td>{{ agent.username }}</td>
-                    <td style="color: #ffcc00;">{{ agent.password }}</td>
+                    <td style="color: #ffcc00;">Classified</td>
                     <td>
                         <a class="view-btn" href="{{ url_for('profile', agent_id=agent.id) }}">Access Profile</a>
                     </td>
