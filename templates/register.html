@@ -77,9 +77,9 @@
                 <INPUT type="text"name="username" value="{{ username or '' }}" autocomplete = "off">
             </div>
             <div class="input-group">
-                <label>PASS KEY</label>
-                 <!-- CRUCIAL: Make sure name is exactly "pass_key" -->
-                 <input type="text" name="pass_key" value="{{ pass_key or '' }}" autocomplete="off">
+                <label>SPY EMAIL</label>
+                 <!-- name must be exactly "spy_email" to match the backend and database column -->
+                 <input type="email" name="spy_email" value="{{ spy_email or '' }}" autocomplete="off">
             </div>
             <div class="input-group">
                 <label>SECRET PASSWORD</label>

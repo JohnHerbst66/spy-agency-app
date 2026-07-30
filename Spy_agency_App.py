@@ -41,9 +41,9 @@ def login():
         return redirect(url_for('dashboard'))
 
     if request.method == 'POST':
-        username = request.form.get('username').strip()
-        password = request.form.get('password').strip()
-        
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+
         connection = get_db_connection()
         # Look up the agent by username ONLY, then verify the password hash in Python.
         # We never send the raw password to the database for comparison.
@@ -87,11 +87,13 @@ def dashboard():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        codename = request.form.get('codename').strip()
-        username = request.form.get('username').strip()
-        spy_email = request.form.get('spy_email').strip()
-        password = request.form.get('password').strip()
-        
+        # Use a default of '' so a missing field fails validation gracefully
+        # instead of raising AttributeError on None.strip().
+        codename = request.form.get('codename', '').strip()
+        username = request.form.get('username', '').strip()
+        spy_email = request.form.get('spy_email', '').strip()
+        password = request.form.get('password', '').strip()
+
         error = validate_agent_form(codename, username, spy_email, password)
         if error:
             flash(error, 'error')
@@ -177,11 +179,11 @@ def update_profile(agent_id):
         return redirect(url_for('users'))
 
     if request.method == 'POST':
-        codename = request.form.get('codename').strip()
-        username = request.form.get('username').strip()
-        spy_email = request.form.get('spy_email').strip()
-        password = request.form.get('password').strip()
-        
+        codename = request.form.get('codename', '').strip()
+        username = request.form.get('username', '').strip()
+        spy_email = request.form.get('spy_email', '').strip()
+        password = request.form.get('password', '').strip()
+
         error = validate_agent_form(codename, username, spy_email, password)
         if error:
             flash(error, 'error')
